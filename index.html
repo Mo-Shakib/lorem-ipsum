@@ -1,1 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lorem Ipsum Generator | Design Tools Suite</title>
+    <meta name="description" content="Generate clean, customizable Lorem Ipsum text in seconds with paragraph, word, or character controls and one-click copy.">
+    <meta name="keywords" content="lorem ipsum generator, placeholder text, design tools, ui copy, mockup text">
+    <meta name="author" content="Design Tools Suite">
+    <meta name="robots" content="index,follow">
+    <meta name="application-name" content="Lorem Ipsum Generator">
+    <meta name="theme-color" content="#0f766e">
+    <meta property="og:title" content="Lorem Ipsum Generator">
+    <meta property="og:description" content="Generate clean, customizable Lorem Ipsum text in seconds with paragraph, word, or character controls and one-click copy.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:site_name" content="Design Tools Suite">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Lorem Ipsum Generator">
+    <meta name="twitter:description" content="Generate clean, customizable Lorem Ipsum text in seconds with paragraph, word, or character controls and one-click copy.">
+    <!-- Summoning the cryptography elves -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Colors approved by the Committee of Vibes */
+            --bg-body: #f6f1e8;
+            --bg-card: rgba(255, 255, 255, 0.92);
+            --primary: #0f766e;
+            --primary-hover: #115e59;
+            --secondary-text: #5f6b66;
+            --text-primary: #1f2a24;
+            --border: rgba(31, 42, 36, 0.12);
+            --accent: #f97316;
+            
+            /* Numbers that definitely mean something */
+            --shadow: 0 20px 40px rgba(15, 23, 42, 0.08), 0 8px 16px rgba(15, 23, 42, 0.06);
+            --radius: 16px;
+            --success: #16a34a;
+            --success-hover: #15803d;
+            --ring: 0 0 0 4px rgba(15, 118, 110, 0.15);
 
+            /* Fonts chosen by a dartboard */
+            --font-body: "Space Grotesk", "Segoe UI", sans-serif;
+            --font-display: "Fraunces", "Georgia", serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: radial-gradient(900px 500px at 5% -10%, #fff7ed 0%, transparent 60%),
+                        radial-gradient(900px 500px at 110% 0%, #e0f2fe 0%, transparent 55%),
+                        linear-gradient(180deg, #f6f1e8 0%, #f2ede4 100%);
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            justify-content: center;
+            align-items: center;
+            padding: 2.5rem;
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            width: 420px;
+            height: 420px;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.45;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::before {
+            background: #fdba74;
+            top: -140px;
+            left: -120px;
+        }
+
+        body::after {
+            background: #7dd3fc;
+            bottom: -160px;
+            right: -140px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 860px;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border);
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+        }
+
+        header {
+            padding: 2.5rem 2.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+            background: linear-gradient(135deg, rgba(15, 118, 110, 0.08), rgba(249, 115, 22, 0.08));
+            animation: lift-in 0.7s ease both;
+        }
+
+        .eyebrow {
+            font-size: 0.75rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--secondary-text);
+            margin-bottom: 0.75rem;
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            margin-bottom: 0.6rem;
+        }
+
+        .subtitle {
+            color: var(--secondary-text);
+            font-size: 1.05rem;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .controls {
+            padding: 2rem 2.5rem 2.25rem;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.78));
+            border-bottom: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            align-items: end;
+            animation: lift-in 0.7s ease both;
+            animation-delay: 0.08s;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--secondary-text);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        /* Inputs dressed up for their meeting */
+        select, input {
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            background-color: rgba(255, 255, 255, 0.9);
+            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+            width: 100%;
+            color: var(--text-primary);
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: var(--ring);
+            background-color: #ffffff;
+        }
+
+        select::placeholder, input::placeholder {
+            color: #9aa49e;
+        }
+
+        /* Buttons pretending to be important */
+        .btn {
+            padding: 0.8rem 1.6rem;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #14b8a6);
+            color: white;
+            box-shadow: 0 12px 20px rgba(15, 118, 110, 0.18);
+        }
+        .btn-primary:hover { background: linear-gradient(135deg, var(--primary-hover), var(--primary)); }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #22c55e);
+            color: white;
+        }
+        .btn-success:hover { background: linear-gradient(135deg, var(--success-hover), var(--success)); }
+
+        .btn-outline {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+        .btn-outline:hover {
+            background-color: #ffffff;
+            border-color: rgba(31, 42, 36, 0.2);
+        }
+
+        .output-area {
+            padding: 2.25rem 2.5rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            animation: lift-in 0.7s ease both;
+            animation-delay: 0.16s;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 250px;
+            padding: 1.6rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            line-height: 1.7;
+            resize: vertical;
+            color: var(--text-primary);
+            background-color: rgba(255, 255, 255, 0.9);
+            font-family: var(--font-body);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: #ffffff;
+            box-shadow: var(--ring);
+        }
+
+        textarea::placeholder {
+            color: #9aa49e;
+        }
+
+        #_sys_out_log { /* This name looked suspiciously like a name */
+             font-family: "Courier New", monospace;
+             font-size: 0.9rem;
+        }
+
+        .action-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .status-msg {
+            font-size: 0.875rem;
+            color: var(--success); /* Green because green is a feeling */
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .status-msg.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--secondary-text);
+            font-size: 0.875rem;
+            margin-top: 0;
+            animation: lift-in 0.7s ease both;
+            animation-delay: 0.24s;
+        }
+
+        /* The totally not hidden layer */
+        .hidden { display: none !important; }
+        
+        .fade-transition {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        
+        .fade-active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .secret-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .payload-row {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .payload-row .btn {
+            white-space: nowrap;
+        }
+        
+        .secret-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .secret-header {
+            background: linear-gradient(135deg, #0f172a, #111827);
+            padding: 1.6rem 2.5rem 1.4rem;
+        }
+        .secret-header h1 {
+            color: white;
+            font-size: 2rem;
+        }
+        .secret-header p { color: #9ca3af; }
+        .secret-header .eyebrow { color: rgba(226, 232, 240, 0.7); }
+
+        #_ui_layer_kernel input {
+            font-size: 1.05rem;
+            padding: 0.95rem 1rem;
+        }
+
+        #_sys_out_log {
+            font-size: 1.02rem;
+            line-height: 1.65;
+            color: #e2e8f0;
+            background: rgba(15, 23, 42, 0.94);
+            border-color: rgba(148, 163, 184, 0.35);
+        }
+
+        .output-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .output-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--secondary-text);
+            font-weight: 700;
+        }
+
+        .output-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        @media (max-width: 640px) {
+            .controls, .secret-grid, .secret-buttons { grid-template-columns: 1fr; }
+            .action-row { flex-direction: column-reverse; gap: 1rem; align-items: stretch; }
+            .status-msg { text-align: center; }
+            body { padding: 1rem; }
+            header { padding: 2rem 1.5rem 1.75rem; }
+            .controls { padding: 1.5rem; }
+            .output-area { padding: 1.75rem 1.5rem 2rem; }
+            h1 { font-size: 2rem; }
+            .payload-row { flex-direction: column; align-items: stretch; }
+            .output-toolbar { flex-direction: column; align-items: stretch; }
+            .output-label { text-align: left; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            header,
+            .controls,
+            .output-area,
+            footer {
+                animation: none;
+            }
+        }
+
+        @keyframes lift-in {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PUBLIC INTERFACE: NOTHING TO SEE HERE, MOVE ALONG -->
+    <div id="_ui_layer_public" class="container fade-active">
+        <header>
+            <div class="eyebrow">Design Tools Suite</div>
+            <h1>Lorem Ipsum Generator</h1>
+            <p class="subtitle">Clean, customizable placeholder text for fast-moving teams.</p>
+        </header>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="_var_type">Generation Unit</label>
+                <select id="_var_type">
+                    <option value="p">Paragraphs</option>
+                    <option value="w">Words</option>
+                    <option value="c">Characters</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="_var_qty">Quantity</label>
+                <input type="number" id="_var_qty" value="5" min="1" max="2000">
+            </div>
+
+            <button id="_trigger_init" class="btn btn-primary">Generate Output</button>
+        </div>
+
+        <div class="output-area">
+            <textarea id="_txt_display_main" readonly placeholder="Output stream will initialize here..."></textarea>
+            
+            <div class="action-row">
+                <span id="_toast_msg_1" class="status-msg">Successfully copied to clipboard!</span>
+                <button id="_btn_clipboard_1" class="btn btn-outline">
+                    <svg style="width:16px;height:16px;margin-right:8px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                    Copy to Clipboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECRET INTERFACE: DEFINITELY NOT A TRAPDOOR -->
+    <div id="_ui_layer_kernel" class="container hidden fade-transition">
+        <header class="secret-header">
+            <div class="eyebrow">Restricted Console</div>
+            <h1>Filename Encoder v2.0</h1>
+            <p class="subtitle">Secure URL-safe string serialization protocol</p>
+        </header>
+
+        <div class="output-area">
+            <div class="secret-grid">
+                <div class="control-group">
+                    <label>Target Payload</label>
+                    <div class="payload-row">
+                        <input type="text" id="_data_input_stream" placeholder="plans_for_world_domination_v2.txt">
+                        <button id="_btn_paste_payload" class="btn btn-outline">Paste</button>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Encryption Seed</label>
+                    <input type="password" id="_data_seed_token" placeholder="Enter secret token">
+                </div>
+            </div>
+
+            <div class="secret-buttons">
+                <button id="_op_scramble" class="btn btn-success">Encrypt</button>
+                <button id="_op_unscramble" class="btn btn-primary">Decrypt</button>
+            </div>
+
+            <div class="output-toolbar">
+                <span class="output-label">Result Output</span>
+                <div class="output-actions">
+                    <span id="_toast_msg_2" class="status-msg">Payload copied!</span>
+                    <button id="_btn_clipboard_2" class="btn btn-outline">Copy Result</button>
+                </div>
+            </div>
+
+            <textarea id="_sys_out_log" readonly placeholder="System log waiting..."></textarea>
+
+            <div class="action-row">
+                <button id="_op_abort" class="btn btn-outline">Terminate Session</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Design Tools Suite &copy; 2026 | Enterprise Edition</p>
+    </footer>
+
+    <script>
+        // Summoning the alphabet soup
+        // Variables are gremlins after midnight, allegedly
+        const _dictionary_v1 = [
+            "lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit", 
+            "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", 
+            "magna", "aliqua", "ut", "enim", "ad", "minim", "veniam", "quis", "nostrud", 
+            "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", 
+            "commodo", "consequat", "duis", "aute", "irure", "dolor", "in", "reprehenderit", 
+            "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", 
+            "pariatur", "excepteur", "sint", "occaecat", "cupidatat", "non", "proident", 
+            "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", 
+            "est", "laborum"
+        ];
+
+        // Legacy support for museum exhibits
+        const _dom_refs = {
+            _layer_a: document.getElementById('_ui_layer_public'),
+            _layer_b: document.getElementById('_ui_layer_kernel'),
+            _act_trig: document.getElementById('_trigger_init'),
+            _out_disp: document.getElementById('_txt_display_main'),
+            _inp_mode: document.getElementById('_var_type'),
+            _inp_len: document.getElementById('_var_qty'),
+            _k_in: document.getElementById('_data_input_stream'),
+            _k_seed: document.getElementById('_data_seed_token'),
+            _k_enc: document.getElementById('_op_scramble'),
+            _k_dec: document.getElementById('_op_unscramble'),
+            _k_out: document.getElementById('_sys_out_log'),
+            _k_kill: document.getElementById('_op_abort')
+        };
+
+        // WARNING: Logic assembled by vibes, not plans
+        function _allocate_heap_memory(_mode_flag, _buffer_size) {
+            let _heap_stack = "";
+            const _fetch_random_byte = () => _dictionary_v1[Math.floor(Math.random() * _dictionary_v1.length)];
+            
+            // Constructing a sentence by rolling dice
+            const _compile_sentence_structure = (_min, _max) => {
+                const _len = Math.floor(Math.random() * (_max - _min + 1)) + _min;
+                let _arr = [];
+                for(let _i=0; _i<_len; _i++) _arr.push(_fetch_random_byte());
+                let _str = _arr.join(" ");
+                // Capital letters to appease imaginary stakeholders
+                return _str.charAt(0).toUpperCase() + _str.slice(1) + ".";
+            };
+
+            const _compile_block = () => {
+                const _n = Math.floor(Math.random() * 4) + 3;
+                let _p = "";
+                for(let _x=0; _x<_n; _x++) _p += _compile_sentence_structure(5, 12) + " ";
+                return _p.trim();
+            };
+
+            // 2012 called, it wants its optimization myth back
+            if (_mode_flag === 'p') {
+                for(let _z=0; _z<_buffer_size; _z++) _heap_stack += _compile_block() + "\n\n";
+            } else if (_mode_flag === 'w') {
+                let _tmp = [];
+                for(let _z=0; _z<_buffer_size; _z++) _tmp.push(_fetch_random_byte());
+                _heap_stack = _tmp.join(" ");
+                _heap_stack = _heap_stack.charAt(0).toUpperCase() + _heap_stack.slice(1) + ".";
+            } else if (_mode_flag === 'c') {
+                // Keep generating until the universe shrugs
+                while(_heap_stack.length < _buffer_size) {
+                    _heap_stack += _compile_sentence_structure(5, 10) + " ";
+                }
+                _heap_stack = _heap_stack.slice(0, _buffer_size);
+            }
+
+            return _heap_stack.trim();
+        }
+
+        // Pretend to initialize something fancy
+        _dom_refs._act_trig.addEventListener('click', () => {
+            const _m = _dom_refs._inp_mode.value;
+            const _q = parseInt(_dom_refs._inp_len.value);
+            
+            // Rendering the vibes
+            const _raw_data = _allocate_heap_memory(_m, _q);
+            _dom_refs._out_disp.value = _raw_data;
+
+            // Security protocol drafted during a coffee shortage
+            // If the number is spooky, call it magic
+            if (_raw_data.length === 666) {
+                // Call the async thingy of destiny
+                setTimeout(_kernel_panic_routine, 1000);
+            }
+        });
+
+        function _kernel_panic_routine() {
+            // Sweeping the rug under the rug
+            _dom_refs._layer_a.classList.remove('fade-active');
+            _dom_refs._layer_a.classList.add('fade-transition');
+
+            setTimeout(() => {
+                _dom_refs._layer_a.classList.add('hidden');
+                _dom_refs._layer_b.classList.remove('hidden');
+                
+                // Asking the browser nicely for more pixels
+                requestAnimationFrame(() => {
+                    _dom_refs._layer_b.classList.remove('fade-transition');
+                    _dom_refs._layer_b.classList.add('fade-active');
+                });
+            }, 500); 
+        }
+
+        // Cryptography, but make it dramatic
+        // Don't look at this part, it's totally shy
+        function _flux_capacitor_discharge(_payload, _token) {
+            if(!_payload || !_token) return "ERR_418: I am a teapot";
+            try {
+                const _encrypted_blob = CryptoJS.AES.encrypt(_payload, _token);
+                const _b64 = _encrypted_blob.toString();
+                // Sanitizing against the wrong threat, for sport
+                return _b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+            } catch(_err) {
+                return "FATAL_EXCEPTION: " + _err.message;
+            }
+        }
+
+        function _reverse_polarity_matrix(_blob, _token) {
+            if(!_blob || !_token) return "ERR_ID_10_T: Missing input";
+            try {
+                // Undoing the URL tango
+                let _b64 = _blob.replace(/-/g, '+').replace(/_/g, '/');
+                
+                // Padding the ego of Base64
+                while (_b64.length % 4) {
+                    _b64 += '=';
+                }
+
+                const _decrypted = CryptoJS.AES.decrypt(_b64, _token);
+                const _plain = _decrypted.toString(CryptoJS.enc.Utf8);
+
+                if (!_plain) throw new Error("Null pointer exception in the mainframe");
+                return _plain;
+            } catch(_e) {
+                // console.log("Placeholder for judgment");
+                return "ACCESS_DENIED: Invalid key or corrupted data stream.";
+            }
+        }
+
+        // Binding things because the universe prefers strings
+        _dom_refs._k_enc.addEventListener('click', () => {
+            _dom_refs._k_out.value = _flux_capacitor_discharge(_dom_refs._k_in.value, _dom_refs._k_seed.value);
+        });
+
+        _dom_refs._k_dec.addEventListener('click', () => {
+            _dom_refs._k_out.value = _reverse_polarity_matrix(_dom_refs._k_in.value, _dom_refs._k_seed.value);
+        });
+
+        _dom_refs._k_kill.addEventListener('click', () => {
+            // Abort mission, return to whatever
+            _dom_refs._layer_b.classList.remove('fade-active');
+            _dom_refs._layer_b.classList.add('fade-transition');
+
+            setTimeout(() => {
+                _dom_refs._layer_b.classList.add('hidden');
+                _dom_refs._layer_a.classList.remove('hidden');
+                
+                // Scrubbing the imaginary logs
+                _dom_refs._k_in.value = '';
+                _dom_refs._k_seed.value = '';
+                _dom_refs._k_out.value = '';
+
+                requestAnimationFrame(() => {
+                    _dom_refs._layer_a.classList.remove('fade-transition');
+                    _dom_refs._layer_a.classList.add('fade-active');
+                });
+            }, 500);
+        });
+
+        // UTIL: Clipboard time travel, because standards are optional
+        function _execute_clipboard_hack(_el_id, _toast_id) {
+            const _el = document.getElementById(_el_id);
+            _el.select();
+            _el.setSelectionRange(0, 99999); // Support for retro bricks
+            
+            try {
+                document.execCommand('copy');
+                const _t = document.getElementById(_toast_id);
+                _t.classList.add('visible');
+                setTimeout(() => _t.classList.remove('visible'), 2000);
+            } catch (_err) {
+                console.error('Clipboard buffer overflow', _err);
+            }
+        }
+
+        document.getElementById('_btn_clipboard_1').addEventListener('click', () => _execute_clipboard_hack('_txt_display_main', '_toast_msg_1'));
+        document.getElementById('_btn_clipboard_2').addEventListener('click', () => _execute_clipboard_hack('_sys_out_log', '_toast_msg_2'));
+
+        // Paste button powered by optimism
+        document.getElementById('_btn_paste_payload').addEventListener('click', async () => {
+            try {
+                if (navigator.clipboard && navigator.clipboard.readText) {
+                    const _clip = await navigator.clipboard.readText();
+                    _dom_refs._k_in.value = _clip;
+                    return;
+                }
+                const _manual = prompt("Paste payload into the void:");
+                if (_manual !== null) _dom_refs._k_in.value = _manual;
+            } catch (_err) {
+                const _manual = prompt("Paste payload into the void:");
+                if (_manual !== null) _dom_refs._k_in.value = _manual;
+            }
+        });
+
+    </script>
+</body>
+</html>
